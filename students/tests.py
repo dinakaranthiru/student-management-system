@@ -51,3 +51,7 @@ class StudentViewTests(TestCase):
         response = self.client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "📊 Dashboard")
+
+    def test_intentional_failure(self):
+        """This test is designed to fail to check the GitHub CI."""
+        self.assertEqual(1, 2)
