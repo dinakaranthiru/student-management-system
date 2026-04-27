@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Student Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f1117;
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-wrapper {
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+        }
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-logo .emoji { font-size: 3rem; display: block; margin-bottom: 12px; }
+        .login-logo h1 { font-size: 1.4rem; font-weight: 700; color: #818cf8; }
+        .login-logo p  { font-size: 0.85rem; color: #8892b0; margin-top: 6px; }
+
+        .login-card {
+            background: #1e2235;
+            border: 1px solid #2e3250;
+            border-radius: 16px;
+            padding: 32px;
+        }
+        .login-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
+        .login-card .subtitle { font-size: 0.82rem; color: #8892b0; margin-bottom: 28px; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 500; color: #8892b0; margin-bottom: 6px; }
+        .form-group input {
+            width: 100%;
+            background: #22263a;
+            border: 1px solid #2e3250;
+            border-radius: 8px;
+            padding: 11px 14px;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus { outline: none; border-color: #6366f1; }
+
+        .errorlist { list-style: none; margin-top: 6px; }
+        .errorlist li { color: #fca5a5; font-size: 0.78rem; }
+
+        .btn-login {
+            width: 100%;
+            background: #6366f1;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+        .btn-login:hover { background: #4f46e5; }
+
+        .alert {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 18px;
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #fca5a5;
+        }
+
+        .login-footer { text-align: center; margin-top: 20px; font-size: 0.78rem; color: #8892b0; }
+    </style>
+</head>
+<body>
+<div class="login-wrapper">
+    <div class="login-logo">
+        <span class="emoji">🎓</span>
+        <h1>Student Management</h1>
+    </div>
+    <div class="login-card">
+        <h2>Welcome back 👋</h2>
+        <p class="subtitle">Sign in to access the dashboard</p>
+
+        {% if form.errors %}
+        <div class="alert">❌ Invalid username or password. Please try again.</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                <input type="text" name="username" id="id_username" placeholder="admin" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="id_password">Password</label>
+                <input type="password" name="password" id="id_password" placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-login">🔐 Sign In</button>
+        </form>
+    </div>
+    <div class="login-footer">Student Management System &copy; 2024</div>
+</div>
+</body>
+</html>

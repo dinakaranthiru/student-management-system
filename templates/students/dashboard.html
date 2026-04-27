@@ -1,0 +1,133 @@
+{% extends 'students/base.html' %}
+
+{% block title %}Dashboard — Student Management System{% endblock %}
+{% block page_title %}📊 Dashboard{% endblock %}
+
+{% block content %}
+<!-- STAT CARDS -->
+<div class="stats-grid">
+    <div class="stat-card indigo">
+        <div class="stat-icon">👨‍🎓</div>
+        <div class="stat-val">{{ total_students }}</div>
+        <div class="stat-label">Total Students</div>
+    </div>
+    <div class="stat-card green">
+        <div class="stat-icon">✅</div>
+        <div class="stat-val">{{ active_students }}</div>
+        <div class="stat-label">Active Students</div>
+    </div>
+    <div class="stat-card red">
+        <div class="stat-icon">⏸️</div>
+        <div class="stat-val">{{ inactive_students }}</div>
+        <div class="stat-label">Inactive Students</div>
+    </div>
+    <div class="stat-card yellow">
+        <div class="stat-icon">🏛️</div>
+        <div class="stat-val">{{ total_depts }}</div>
+        <div class="stat-label">Departments</div>
+    </div>
+    <div class="stat-card blue">
+        <div class="stat-icon">📈</div>
+        <div class="stat-val">{{ avg_gpa }}</div>
+        <div class="stat-label">Average GPA</div>
+    </div>
+</div>
+
+<!-- BOTTOM GRID: Recent Students + Dept Stats -->
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+    <!-- RECENT STUDENTS -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">🕐 Recent Students</span>
+            <a href="{% url 'student_list' %}" class="btn btn-ghost btn-sm">View All →</a>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            {% if recent_students %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Roll No.</th>
+                            <th>GPA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in recent_students %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'student_detail' s.pk %}" style="color: #818cf8; text-decoration: none;">
+                                    {{ s.get_full_name }}
+                                </a>
+                            </td>
+                            <td><code style="color: #8892b0; font-size: 0.78rem;">{{ s.roll_number }}</code></td>
+                            <td>
+                                {% if s.gpa_grade == 'A+' %}<span class="grade grade-ap">A+</span>
+                                {% elif s.gpa_grade == 'A'  %}<span class="grade grade-a">A</span>
+                                {% elif s.gpa_grade == 'B'  %}<span class="grade grade-b">B</span>
+                                {% elif s.gpa_grade == 'C'  %}<span class="grade grade-c">C</span>
+                                {% else %}<span class="grade grade-f">F</span>{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty"><div class="empty-icon">📭</div><h3>No students yet</h3></div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- DEPT STATS -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">🏛️ Students by Department</span>
+            <a href="{% url 'department_list' %}" class="btn btn-ghost btn-sm">View →</a>
+        </div>
+        <div class="card-body">
+            {% if dept_stats %}
+            {% for dept in dept_stats %}
+            <div style="margin-bottom: 14px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px;">
+                    <span>{{ dept.name }}</span>
+                    <span style="color: #8892b0;">{{ dept.student_count }} students</span>
+                </div>
+                <div style="background: #22263a; border-radius: 4px; height: 6px; overflow: hidden;">
+                    {% if total_students > 0 %}
+                    <div style="--progress: {% widthratio dept.student_count total_students 100 %}%; width: var(--progress); background: #6366f1; height: 100%; border-radius: 4px; transition: width 0.5s;"></div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty"><div class="empty-icon">🏛️</div><h3>No departments yet</h3></div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+<!-- YEAR BREAKDOWN -->
+<div class="card" style="margin-top: 20px;">
+    <div class="card-header">
+        <span class="card-title">📅 Students by Year</span>
+    </div>
+    <div class="card-body" style="display: flex; gap: 20px; flex-wrap: wrap;">
+        {% for item in students_by_year %}
+        <div style="flex: 1; min-width: 120px; background: #22263a; border-radius: 10px; padding: 16px; text-align: center;">
+            <div style="font-size: 1.6rem; font-weight: 700; color: #818cf8;">{{ item.count }}</div>
+            <div style="font-size: 0.78rem; color: #8892b0; margin-top: 4px;">
+                {% if item.year == 1 %}1st Year
+                {% elif item.year == 2 %}2nd Year
+                {% elif item.year == 3 %}3rd Year
+                {% else %}4th Year{% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <p style="color: #8892b0; font-size: 0.85rem;">No data yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

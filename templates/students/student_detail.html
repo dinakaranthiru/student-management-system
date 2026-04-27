@@ -1,0 +1,94 @@
+{% extends 'students/base.html' %}
+
+{% block title %}{{ student.get_full_name }} — Student Profile{% endblock %}
+{% block page_title %}👤 Student Profile{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2>{{ student.get_full_name }}</h2>
+        <p>Roll No: <code style="color: #818cf8;">{{ student.roll_number }}</code> · Added on {{ student.created_at|date:"M d, Y" }}</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'student_edit' student.pk %}" class="btn btn-primary">✏️ Edit Profile</a>
+        <a href="{% url 'student_delete' student.pk %}" class="btn btn-danger">🗑️ Delete</a>
+        <a href="{% url 'student_list' %}" class="btn btn-ghost">← Back</a>
+    </div>
+</div>
+
+<div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <!-- Grade Card -->
+    <div class="stat-card {% if student.gpa >= 8 %}green{% elif student.gpa >= 6 %}blue{% else %}red{% endif %}" style="display: flex; align-items: center; gap: 20px;">
+        <div style="font-size: 2.8rem; font-weight: 800; color: var(--text);">{{ student.gpa_grade }}</div>
+        <div>
+            <div style="font-size: 1.6rem; font-weight: 700; color: var(--text);">{{ student.gpa }}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Current GPA</div>
+        </div>
+    </div>
+    
+    <!-- Status Card -->
+    <div class="stat-card" style="display: flex; flex-direction: column; justify-content: center;">
+        <div class="stat-label">Status</div>
+        <div style="margin-top: 8px;">
+            {% if student.is_active %}
+            <span class="status status-active" style="font-size: 0.9rem; padding: 6px 14px;">● Active Student</span>
+            {% else %}
+            <span class="status status-inactive" style="font-size: 0.9rem; padding: 6px 14px;">● Inactive</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+    
+    <!-- Contact Details -->
+    <div class="card">
+        <div class="card-header"><span class="card-title">📞 Contact Information</span></div>
+        <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Email Address</div>
+                    <div style="font-size: 0.95rem;">
+                        <a href="mailto:{{ student.email }}" style="color: var(--info); text-decoration: none;">{{ student.email }}</a>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Phone Number</div>
+                    <div style="font-size: 0.95rem;">
+                        {% if student.phone %}{{ student.phone }}{% else %}<em style="color: var(--border);">Not provided</em>{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Academic Details -->
+    <div class="card">
+        <div class="card-header"><span class="card-title">🎓 Academic Information</span></div>
+        <div class="card-body">
+            <table style="border: none;">
+                <tbody>
+                    <tr>
+                        <td style="border: none; padding: 8px 0; font-size: 0.85rem; color: var(--text-muted); width: 120px;">Department:</td>
+                        <td style="border: none; padding: 8px 0; font-weight: 500;">{{ student.department.name }}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: none; padding: 8px 0; font-size: 0.85rem; color: var(--text-muted);">Year:</td>
+                        <td style="border: none; padding: 8px 0; font-weight: 500;">
+                            {% if student.year == 1 %}1st Year
+                            {% elif student.year == 2 %}2nd Year
+                            {% elif student.year == 3 %}3rd Year
+                            {% else %}4th Year{% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border: none; padding: 8px 0; font-size: 0.85rem; color: var(--text-muted);">Enrolled On:</td>
+                        <td style="border: none; padding: 8px 0; font-weight: 500;">{{ student.created_at|date:"F d, Y" }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

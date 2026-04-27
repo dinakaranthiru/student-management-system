@@ -1,0 +1,132 @@
+{% extends 'students/base.html' %}
+
+{% block title %}{{ title }} — Student Management{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px;">
+    <div class="card-header">
+        <span class="card-title">Student Information</span>
+        <a href="{% url 'student_list' %}" class="btn btn-ghost btn-sm">← Back to List</a>
+    </div>
+    
+    <div class="card-body">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <div class="form-grid">
+                
+                <h4 class="form-full" style="padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 8px; color: var(--primary-light);">
+                    Basic Details
+                </h4>
+
+                <div class="form-group">
+                    <label for="{{ form.roll_number.id_for_label }}">Roll Number *</label>
+                    {{ form.roll_number }}
+                    {% if form.roll_number.errors %}
+                        <ul class="errorlist">
+                        {% for error in form.roll_number.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                
+                <div style="grid-column: 2;"></div> <!-- spacer -->
+
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">First Name *</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <ul class="errorlist">
+                        {% for error in form.first_name.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">Last Name *</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <ul class="errorlist">
+                        {% for error in form.last_name.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email *</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <ul class="errorlist">
+                        {% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}
+                        <ul class="errorlist">
+                        {% for error in form.phone.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <h4 class="form-full" style="padding-bottom: 8px; border-bottom: 1px solid var(--border); margin: 16px 0 8px; color: var(--primary-light);">
+                    Academic Details
+                </h4>
+
+                <div class="form-group">
+                    <label for="{{ form.department.id_for_label }}">Department *</label>
+                    {{ form.department }}
+                    {% if form.department.errors %}
+                        <ul class="errorlist">
+                        {% for error in form.department.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.year.id_for_label }}">Year *</label>
+                    {{ form.year }}
+                    {% if form.year.errors %}
+                        <ul class="errorlist">
+                        {% for error in form.year.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.gpa.id_for_label }}">GPA (0-10)</label>
+                    {{ form.gpa }}
+                    {% if form.gpa.errors %}
+                        <ul class="errorlist">
+                        {% for error in form.gpa.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group" style="flex-direction: row; align-items: center; margin-top: 24px;">
+                    {{ form.is_active }}
+                    <label for="{{ form.is_active.id_for_label }}" style="margin: 0; font-size: 0.9rem; color: var(--text); cursor: pointer;">
+                        Student is currently Active
+                    </label>
+                </div>
+
+            </div>
+
+            <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; gap: 12px;">
+                <button type="submit" class="btn btn-primary">{{ btn_label }}</button>
+                <a href="javascript:history.back()" class="btn btn-ghost">Cancel</a>
+            </div>
+            
+        </form>
+    </div>
+</div>
+{% endblock %}

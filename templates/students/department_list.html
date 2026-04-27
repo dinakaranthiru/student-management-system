@@ -1,0 +1,52 @@
+{% extends 'students/base.html' %}
+
+{% block title %}Departments — Student Management{% endblock %}
+{% block page_title %}🏛️ Departments{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 900px;">
+    <div class="card-header">
+        <span class="card-title">All Departments</span>
+        <a href="{% url 'department_add' %}" class="btn btn-success">+ Add Department</a>
+    </div>
+
+    <div class="card-body" style="padding: 0;">
+        {% if departments %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ID</th>
+                        <th>Department Name</th>
+                        <th style="text-align: right;">Total Students</th>
+                        <th style="text-align: right;">Capacity Used</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dept in departments %}
+                    <tr>
+                        <td><code style="color: #8892b0; font-size: 0.78rem;">#{{ dept.id|stringformat:"02d" }}</code></td>
+                        <td style="font-weight: 500;">{{ dept.name }}</td>
+                        <td style="text-align: right;">
+                            <span class="badge badge-primary" style="font-size: 0.8rem; padding: 4px 12px;">{{ dept.student_count }}</span>
+                        </td>
+                        <td style="text-align: right; width: 140px;">
+                            <div style="background: #22263a; border-radius: 4px; height: 6px; overflow: hidden; margin-top: 6px;">
+                                <div style="--progress: {% widthratio dept.student_count 50 100 %}%; width: var(--progress); background: #10b981; height: 100%; border-radius: 4px;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty">
+            <div class="empty-icon">🏛️</div>
+            <h3>No departments defined</h3>
+            <p>Please add some departments before adding students.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

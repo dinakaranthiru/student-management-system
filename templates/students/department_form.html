@@ -1,0 +1,38 @@
+{% extends 'students/base.html' %}
+
+{% block title %}Add Department — Student Management{% endblock %}
+{% block page_title %}➕ Add Department{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px;">
+    <div class="card-header">
+        <span class="card-title">New Department</span>
+        <a href="{% url 'department_list' %}" class="btn btn-ghost btn-sm">← Back to List</a>
+    </div>
+    
+    <div class="card-body">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}">Department Name *</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <ul class="errorlist">
+                    {% for error in form.name.errors %}<li>{{ error }}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+                <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 6px;">
+                    Enter the full canonical name of the department (e.g., Computer Science & Engineering).
+                </p>
+            </div>
+
+            <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; gap: 12px;">
+                <button type="submit" class="btn btn-success">Save Department</button>
+                <a href="{% url 'department_list' %}" class="btn btn-ghost">Cancel</a>
+            </div>
+            
+        </form>
+    </div>
+</div>
+{% endblock %}

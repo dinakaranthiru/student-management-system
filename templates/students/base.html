@@ -1,0 +1,375 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Management System{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --bg: #0f1117;
+            --bg2: #1a1d27;
+            --bg3: #22263a;
+            --surface: #1e2235;
+            --border: #2e3250;
+            --text: #e2e8f0;
+            --text-muted: #8892b0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --sidebar-w: 260px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 100;
+        }
+        .sidebar-brand {
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-brand h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-light);
+            letter-spacing: -0.3px;
+        }
+        .sidebar-brand p { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; }
+
+        .sidebar-nav { flex: 1; padding: 16px 12px; overflow-y: auto; }
+        .nav-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding: 12px 8px 6px;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: 2px;
+        }
+        .nav-link:hover { background: var(--bg3); color: var(--text); }
+        .nav-link.active { background: rgba(99,102,241,0.15); color: var(--primary-light); }
+        .nav-link .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+        .sidebar-footer {
+            padding: 16px 12px;
+            border-top: 1px solid var(--border);
+        }
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: var(--bg3);
+        }
+        .user-avatar {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.875rem; font-weight: 700; color: #fff;
+        }
+        .user-info { flex: 1; min-width: 0; }
+        .user-name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+        .user-role { font-size: 0.7rem; color: var(--text-muted); }
+        .logout-btn {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+        .logout-btn:hover { color: var(--danger); }
+
+        /* ── MAIN ── */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .topbar {
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .topbar h2 { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+        .badge-primary { background: rgba(99,102,241,0.15); color: var(--primary-light); }
+
+        .content { flex: 1; padding: 28px; }
+
+        /* ── MESSAGES ── */
+        .messages { margin-bottom: 20px; }
+        .alert {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 8px;
+            border: 1px solid;
+        }
+        .alert-success { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: #6ee7b7; }
+        .alert-error   { background: rgba(239,68,68,0.1);  border-color: rgba(239,68,68,0.3);  color: #fca5a5; }
+        .alert-warning { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3); color: #fcd34d; }
+        .alert-info    { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); color: #93c5fd; }
+
+        /* ── CARDS ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-title { font-size: 1rem; font-weight: 600; color: var(--text); }
+        .card-body { padding: 20px; }
+
+        /* ── BUTTONS ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-success { background: var(--success); color: #fff; }
+        .btn-success:hover { background: #059669; }
+        .btn-danger  { background: var(--danger); color: #fff; }
+        .btn-danger:hover  { background: #dc2626; }
+        .btn-ghost  { background: transparent; color: var(--text-muted); border-color: var(--border); }
+        .btn-ghost:hover { background: var(--bg3); color: var(--text); }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+
+        /* ── TABLE ── */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        tbody td {
+            padding: 13px 16px;
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+        tbody tr:hover { background: rgba(255,255,255,0.02); }
+        tbody tr:last-child td { border-bottom: none; }
+
+        /* ── STATUS BADGES ── */
+        .status { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .status-active   { background: rgba(16,185,129,0.12); color: #6ee7b7; }
+        .status-inactive { background: rgba(239,68,68,0.12);  color: #fca5a5; }
+
+        /* ── GRADE BADGE ── */
+        .grade { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; }
+        .grade-ap { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+        .grade-a  { background: rgba(59,130,246,0.15); color: #93c5fd; }
+        .grade-b  { background: rgba(245,158,11,0.15); color: #fcd34d; }
+        .grade-c  { background: rgba(249,115,22,0.15); color: #fdba74; }
+        .grade-f  { background: rgba(239,68,68,0.15);  color: #fca5a5; }
+
+        /* ── FORM ── */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 0.82rem; font-weight: 500; color: var(--text-muted); }
+        .form-input, .form-checkbox {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: var(--text);
+            font-size: 0.875rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        .form-input:focus { outline: none; border-color: var(--primary); }
+        .form-input option { background: var(--bg2); }
+        .errorlist { list-style: none; margin-top: 4px; }
+        .errorlist li { color: #fca5a5; font-size: 0.78rem; }
+        .form-full { grid-column: 1 / -1; }
+
+        /* ── STAT CARDS ── */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .stat-card.indigo::before { background: var(--primary); }
+        .stat-card.green::before  { background: var(--success); }
+        .stat-card.yellow::before { background: var(--warning); }
+        .stat-card.red::before    { background: var(--danger); }
+        .stat-card.blue::before   { background: var(--info); }
+        .stat-icon { font-size: 1.8rem; margin-bottom: 12px; }
+        .stat-val { font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1; }
+        .stat-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+        /* ── EMPTY STATE ── */
+        .empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+        .empty h3 { font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+
+        /* ── SEARCH BAR ── */
+        .search-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+        .search-input {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 14px;
+            color: var(--text);
+            font-size: 0.875rem;
+            font-family: 'Inter', sans-serif;
+            flex: 1; min-width: 220px;
+        }
+        .search-input:focus { outline: none; border-color: var(--primary); }
+
+        /* ── PAGE HEADER ── */
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .page-header h2 { font-size: 1.4rem; font-weight: 700; }
+        .page-header p  { font-size: 0.85rem; color: var(--text-muted); margin-top: 3px; }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <h1>🎓 Student MS</h1>
+        <p>Management System v1.0</p>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-label">Main</div>
+        <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <span class="icon">📊</span> Dashboard
+        </a>
+        <a href="{% url 'student_list' %}" class="nav-link {% if 'student' in request.resolver_match.url_name %}active{% endif %}">
+            <span class="icon">👨‍🎓</span> Students
+        </a>
+        <a href="{% url 'department_list' %}" class="nav-link {% if 'department' in request.resolver_match.url_name %}active{% endif %}">
+            <span class="icon">🏛️</span> Departments
+        </a>
+        <div class="nav-label">Admin</div>
+        <a href="/admin/" class="nav-link" target="_blank">
+            <span class="icon">⚙️</span> Admin Panel
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        {% if user.is_authenticated %}
+        <div class="user-card">
+            <div class="user-avatar">{{ user.username|first|upper }}</div>
+            <div class="user-info">
+                <div class="user-name">{{ user.username }}</div>
+                <div class="user-role">Administrator</div>
+            </div>
+            <a href="{% url 'logout' %}" class="logout-btn" title="Logout">🚪</a>
+        </div>
+        {% endif %}
+    </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+    <header class="topbar">
+        <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+        
+    </header>
+    <div class="content">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+{% extends 'students/base.html' %}
+
+{% block title %}Delete Student — {{ student.get_full_name }}{% endblock %}
+{% block page_title %}⚠️ Delete Student{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 0 auto; text-align: center; padding: 20px;">
+    
+    <div style="font-size: 4rem; margin-bottom: 20px;">🗑️</div>
+    
+    <h3 style="font-size: 1.4rem; font-weight: 700; color: var(--text); margin-bottom: 12px;">Are you absolutely sure?</h3>
+    
+    <p style="color: var(--text-muted); margin-bottom: 30px; line-height: 1.6;">
+        You are about to delete the student code <strong>{{ student.roll_number }}</strong>:<br>
+        <span style="font-size: 1.1rem; color: var(--text); font-weight: 600;">{{ student.get_full_name }}</span><br>
+        This action cannot be undone. All data related to this student will be permanently removed from the database.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <a href="javascript:history.back()" class="btn btn-ghost" style="padding: 12px 24px;">Cancel</a>
+            <button type="submit" class="btn btn-danger" style="padding: 12px 24px; font-weight: 600;">Yes, Delete Student</button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
