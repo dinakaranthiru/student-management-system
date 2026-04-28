@@ -15,6 +15,7 @@ spec:
       containers:
       - name: smp-app
         image: dinakarant/student-management:latest
+        imagePullPolicy: Always
         command: ["/bin/sh"]
         args: ["/app/start.sh"]
         ports:
