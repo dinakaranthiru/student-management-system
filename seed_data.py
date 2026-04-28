@@ -11,6 +11,12 @@ OR copy-paste into the Django shell:
   python manage.py shell
   >>> exec(open('seed_data.py').read())
 """
+import os
+import django
+
+# Set up Django environment
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'student_management.settings')
+django.setup()
 
 # We import our models to create records
 from students.models import Student, Department
