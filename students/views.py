@@ -34,9 +34,7 @@ from .models import Student, Department   # Our database models
 from .forms import StudentForm, DepartmentForm, SearchForm  # Our forms
 
 
-# ════════════════════════════════════════════════════════
 # DASHBOARD VIEW
-# ════════════════════════════════════════════════════════
 @login_required  # This decorator means: "User must be logged in to see this"
 def dashboard(request):
     """
@@ -88,9 +86,7 @@ def dashboard(request):
     return render(request, 'students/dashboard.html', context)
 
 
-# ════════════════════════════════════════════════════════
 # LIST ALL STUDENTS
-# ════════════════════════════════════════════════════════
 @login_required
 def student_list(request):
     """Shows a table of all students. Supports search and filter."""
@@ -108,9 +104,6 @@ def student_list(request):
         query = form.cleaned_data.get('query', '')
         
         if query:
-            # Q objects allow OR conditions in queries
-            # | = OR operator
-            # icontains = case-insensitive "contains" search
             students = students.filter(
                 Q(first_name__icontains=query)   |
                 Q(last_name__icontains=query)    |
@@ -135,9 +128,7 @@ def student_list(request):
     return render(request, 'students/student_list.html', context)
 
 
-# ════════════════════════════════════════════════════════
 # STUDENT DETAIL
-# ════════════════════════════════════════════════════════
 @login_required
 def student_detail(request, pk):
     """
@@ -153,9 +144,7 @@ def student_detail(request, pk):
     return render(request, 'students/student_detail.html', context)
 
 
-# ════════════════════════════════════════════════════════
 # ADD NEW STUDENT
-# ════════════════════════════════════════════════════════
 @login_required
 def student_add(request):
     """
@@ -194,9 +183,7 @@ def student_add(request):
     })
 
 
-# ════════════════════════════════════════════════════════
 # EDIT EXISTING STUDENT
-# ════════════════════════════════════════════════════════
 @login_required
 def student_edit(request, pk):
     """Edit an existing student's information."""
@@ -226,9 +213,7 @@ def student_edit(request, pk):
     })
 
 
-# ════════════════════════════════════════════════════════
 # DELETE STUDENT
-# ════════════════════════════════════════════════════════
 @login_required
 def student_delete(request, pk):
     """Delete a student after confirmation."""
@@ -245,9 +230,7 @@ def student_delete(request, pk):
     return render(request, 'students/student_confirm_delete.html', {'student': student})
 
 
-# ════════════════════════════════════════════════════════
 # DEPARTMENTS
-# ════════════════════════════════════════════════════════
 @login_required
 def department_list(request):
     """List all departments with student count."""

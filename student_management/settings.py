@@ -19,12 +19,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-demo-key-for-learning-purposes-only-change-in-production'
 
 # DEBUG = True means you'll see detailed error messages
-# In real production apps, always set DEBUG = False
-DEBUG = True
+# In production, we set this to False using an environment variable
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 # ALLOWED_HOSTS - which domain names can access your app
-# [] means only localhost (your own computer)
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 # INSTALLED_APPS - List of all "apps" in your Django project
 # Django is made of small apps. Each app handles one thing.
@@ -75,10 +74,21 @@ TEMPLATES = [
 # The database file will be created as "db.sqlite3" in your project folder
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Type of database
-        'NAME': BASE_DIR / 'db.sqlite3',          # File location
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# If environment variables are set (like in Docker or Azure), use MySQL
+if os.getenv('DB_NAME'):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', '3306'),
+    }
 
 # STATIC FILES - CSS, JavaScript, Images
 STATIC_URL = '/static/'

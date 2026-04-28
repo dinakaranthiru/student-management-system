@@ -1,4 +1,4 @@
-name: Django CI
+name: Django CI/CD
 
 on:
   push:
@@ -6,10 +6,14 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# Grant permission to ID token for Azure OIDC login (best practice)
+permissions:
+  id-token: write
+  contents: read
 
+jobs:
+  test:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
 
@@ -23,10 +27,30 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Database Migrations
-      run: |
-        python manage.py migrate
-
     - name: Run Tests
       run: |
         python manage.py test students
+
+  build-and-push:
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    # 1. Login to Docker Hub
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # 2. Build and Push Image to Docker Hub
+    - name: Build and Push
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/student-management:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/student-management:${{ github.sha }}

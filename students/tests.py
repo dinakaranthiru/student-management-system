@@ -3,14 +3,10 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import Student, Department
 
-# ════════════════════════════════════════════════════════
 # 1. MODEL TESTS - Testing the Database Structure
-# ════════════════════════════════════════════════════════
 class StudentModelTest(TestCase):
     def setUp(self):
-        # Create a test department
         self.dept = Department.objects.create(name="Computer Science")
-        # Create a test student
         self.student = Student.objects.create(
             first_name="Test",
             last_name="User",
@@ -29,9 +25,7 @@ class StudentModelTest(TestCase):
         """Test the get_full_name() property we wrote in models.py"""
         self.assertEqual(self.student.get_full_name(), "Test User")
 
-# ════════════════════════════════════════════════════════
 # 2. VIEW TESTS - Testing the Web Pages
-# ════════════════════════════════════════════════════════
 class StudentViewTests(TestCase):
     def setUp(self):
         # We need a client and a user because our pages are @login_required
