@@ -84,43 +84,9 @@ python manage.py runserver
 ### Step 7 — Open the app
 Open your browser and go to: **http://127.0.0.1:8000/**
 
----
+## 🧠 KEY CONCEPTS 
 
-## 🎤 DEMO SCRIPT (What to say to your senior)
-
-### 1. Show the Login Page
-> *"This is the login page. Django has a built-in authentication system,
->  so I didn't have to write any login logic from scratch."*
-
-### 2. Show the Dashboard
-> *"After logging in, we see the dashboard. It shows live statistics
->  from the database — total students, active students, departments,
->  and average GPA. These numbers update automatically when data changes."*
-
-### 3. Show the Student List
-> *"This page lists all students from the database in a table.
->  I can search by name, roll number, or email, and filter by department."*
-
-### 4. Add a New Student
-> *"When I click 'Add Student', Django displays this form.
->  The form is defined in forms.py. If I leave a required field empty
->  or enter an invalid GPA, Django automatically shows error messages —
->  this is called form validation."*
-
-### 5. Edit a Student
-> *"I can click Edit on any student. The form auto-fills with their
->  existing data. After saving, it redirects back to their profile page."*
-
-### 6. Show the Admin Panel
-> *"Django also provides a free admin panel at /admin/.
->  I can manage all data here without writing any extra code.
->  This is great for internal use."*
-
----
-
-## 🧠 KEY CONCEPTS TO EXPLAIN
-
-| Concept | What to say |
+| Concept |
 |---------|-------------|
 | **MVT Pattern** | Django uses Model-View-Template. Model = database, View = logic, Template = HTML |
 | **ORM** | Instead of writing SQL, we write Python: `Student.objects.filter(year=1)` |
