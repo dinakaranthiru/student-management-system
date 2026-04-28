@@ -11,6 +11,10 @@ echo "MySQL is up!"
 echo "Running migrations..."
 python manage.py migrate --noinput
 
+# 3. Collect static files
+echo "Collecting static files..."
+python manage.py collectstatic --noinput
+
 # 3. Start Gunicorn
 echo "Starting Gunicorn..."
 exec gunicorn student_management.wsgi:application --bind 0.0.0.0:8000
