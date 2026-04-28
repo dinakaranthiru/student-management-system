@@ -87,7 +87,7 @@ if os.getenv('DB_NAME'):
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT_VALUE', '3306'),
+        'PORT': '3306',
     }
 
 # STATIC FILES - CSS, JavaScript, Images
