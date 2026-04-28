@@ -24,6 +24,8 @@ spec:
           value: "/app"
         - name: DEBUG
           value: "False"
+        - name: DB_PORT_VALUE
+          value: "3306"
         - name: DB_NAME
           valueFrom:
             secretKeyRef:
