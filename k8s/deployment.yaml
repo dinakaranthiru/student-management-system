@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: smp-app
-        image: <Dinakarant>/student-management:latest
+        image: dinakarant/student-management:latest
         ports:
         - containerPort: 8000
         env:
