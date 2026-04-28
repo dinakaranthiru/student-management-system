@@ -15,9 +15,13 @@ spec:
       containers:
       - name: smp-app
         image: dinakarant/student-management:latest
+        command: ["/bin/sh"]
+        args: ["/app/start.sh"]
         ports:
         - containerPort: 8000
         env:
+        - name: PYTHONPATH
+          value: "/app"
         - name: DEBUG
           value: "False"
         - name: DB_NAME
