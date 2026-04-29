@@ -9,8 +9,8 @@ ENV PYTHONPATH=/app
 # Set work directory
 WORKDIR /app
 
-# Remove broken Microsoft repo and install system dependencies
-RUN rm -f /etc/apt/sources.list.d/microsoft-prod.list && \
+# Ultimate Fix: Remove all broken Microsoft repo links from all sources
+RUN sed -i '/packages.microsoft.com/d' /etc/apt/sources.list /etc/apt/sources.list.d/* && \
     apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     pkg-config \
