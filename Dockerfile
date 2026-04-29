@@ -1,5 +1,5 @@
-# Use Microsoft's official mirror for Python to avoid Docker Hub rate limits
-FROM mcr.microsoft.com/mirror/docker/library/python:3.12-slim
+# Use Azure's official Python image (No Docker Hub needed!)
+FROM mcr.microsoft.com/oryx/python:3.12
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
