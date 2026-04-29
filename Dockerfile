@@ -9,8 +9,9 @@ ENV PYTHONPATH=/app
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies for MySQL and line ending fixes
-RUN apt-get update && apt-get install -y \
+# Remove broken Microsoft repo and install system dependencies
+RUN rm -f /etc/apt/sources.list.d/microsoft-prod.list && \
+    apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     pkg-config \
     gcc \
