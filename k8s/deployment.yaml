@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: smp-app
-        image: dinakarant/student-management:latest
+        image: demostudent.azurecr.io/student-management:latest
         imagePullPolicy: Always
         command: ["/bin/sh"]
         args: ["/app/start.sh"]

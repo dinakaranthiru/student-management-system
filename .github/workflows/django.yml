@@ -38,19 +38,37 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # 1. Login to Docker Hub
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
+    - name: Azure Login
+      uses: azure/login@v1
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    # 2. Build and Push Image to Docker Hub
-    - name: Build and Push
+    - name: ACR Login
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ secrets.ACR_NAME }}.azurecr.io
+        username: ${{ secrets.ACR_NAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    
+    - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
         context: .
         push: true
-        tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/student-management:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/student-management:${{ github.sha }}
+        tags: ${{ secrets.ACR_NAME }}.azurecr.io/student-management:latest
+
+    - name: Set AKS Context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: StudentManagement-RG
+        cluster-name: ${{ secrets.CLUSTER_NAME }}
+
+    - name: Deploy to Kubernetes
+      uses: azure/k8s-deploy@v4
+      with:
+        manifests: |
+          k8s/secrets.yaml
+          k8s/mysql-k8s.yaml
+          k8s/deployment.yaml
+        images: |
+          ${{ secrets.ACR_NAME }}.azurecr.io/student-management:latest
