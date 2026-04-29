@@ -72,7 +72,7 @@ jobs:
           k8s/mysql-k8s.yaml
           k8s/deployment.yaml
         images: |
-          ${{ secrets.ACR_NAME }}.azurecr.io/student-management:${{ github.sha }}
+          demostudent.azurecr.io/student-management:${{ github.sha }}
         force: true
 
     - name: Wait for rolling update
