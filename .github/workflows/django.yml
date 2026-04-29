@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
-# Grant permission to ID token for Azure OIDC login (best practice)
 permissions:
   id-token: write
   contents: read
@@ -56,8 +55,8 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.ACR_NAME }}.azurecr.io/student-management:latest
           ${{ secrets.ACR_NAME }}.azurecr.io/student-management:${{ github.sha }}
+          ${{ secrets.ACR_NAME }}.azurecr.io/student-management:latest
 
     - name: Set AKS Context
       uses: azure/aks-set-context@v3
@@ -74,9 +73,21 @@ jobs:
           k8s/deployment.yaml
         images: |
           ${{ secrets.ACR_NAME }}.azurecr.io/student-management:${{ github.sha }}
+        force: true
 
     - name: Wait for rolling update
-      run: kubectl rollout status deployment/smp-web
+      run: kubectl rollout status deployment/smp-web --timeout=5m
 
-    - name: Show running pods
-      run: kubectl get pods -l app=smp
+    - name: Verify deployment
+      run: |
+        echo "Expected image SHA: ${{ github.sha }}"
+        echo "Running pods:"
+        kubectl get pods -l app=smp
+        echo "Current images:"
+        kubectl get pods -l app=smp -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.containers[*].image}{"\n"}{end}'
+
+    - name: Check for errors
+      if: failure()
+      run: |
+        kubectl describe pods -l app=smp
+        kubectl logs -l app=smp --tail=100
