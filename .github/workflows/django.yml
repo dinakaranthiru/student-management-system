@@ -55,7 +55,9 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.ACR_NAME }}.azurecr.io/student-management:latest
+        tags: |
+          ${{ secrets.ACR_NAME }}.azurecr.io/student-management:latest
+          ${{ secrets.ACR_NAME }}.azurecr.io/student-management:${{ github.sha }}
 
     - name: Set AKS Context
       uses: azure/aks-set-context@v3
@@ -71,4 +73,10 @@ jobs:
           k8s/mysql-k8s.yaml
           k8s/deployment.yaml
         images: |
-          ${{ secrets.ACR_NAME }}.azurecr.io/student-management:latest
+          ${{ secrets.ACR_NAME }}.azurecr.io/student-management:${{ github.sha }}
+
+    - name: Wait for rolling update
+      run: kubectl rollout status deployment/smp-web
+
+    - name: Show running pods
+      run: kubectl get pods -l app=smp
