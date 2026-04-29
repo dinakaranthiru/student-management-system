@@ -1,5 +1,5 @@
-# Use an official Python runtime as a parent image
-FROM python:3.12-slim
+# Use Microsoft's official mirror for Python to avoid Docker Hub rate limits
+FROM mcr.microsoft.com/mirror/docker/library/python:3.12-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
